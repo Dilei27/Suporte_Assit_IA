@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UAU Assist IA | Demo Triagem Tech</title>
+<style>
+:root{
+  --bg:#060b14;--panel:#0d1726;--panel2:#111f33;--line:#223650;--text:#f8fafc;--muted:#94a3b8;
+  --cyan:#20d5d2;--blue:#38bdf8;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+  --shadow:0 24px 90px rgba(0,0,0,.38);--radius:22px
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);min-height:100vh;
+  background:radial-gradient(circle at 12% 8%,rgba(32,213,210,.18),transparent 32%),
+             radial-gradient(circle at 88% 12%,rgba(139,92,246,.14),transparent 30%),
+             linear-gradient(135deg,#050814,#07111f 54%,#0a1627)
+}
+.shell{max-width:1320px;margin:0 auto;padding:24px 18px 50px}
+header{
+  display:flex;justify-content:space-between;gap:16px;align-items:center;padding:16px 20px;border:1px solid var(--line);
+  border-radius:26px;background:rgba(13,23,38,.78);backdrop-filter:blur(16px);box-shadow:var(--shadow);position:sticky;top:14px;z-index:20
+}
+.brand{display:flex;align-items:center;gap:14px}.logo{width:48px;height:48px;border-radius:17px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#00111d;font-weight:950}
+h1{margin:0;font-size:20px}.sub{font-size:13px;color:var(--muted);margin-top:4px}.pill{border:1px solid var(--line);background:rgba(255,255,255,.05);padding:9px 12px;border-radius:999px;color:#d7eefc;font-size:13px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin:24px 0}
+.card{border:1px solid var(--line);background:rgba(13,23,38,.82);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.hero h2{font-size:32px;margin:0 0 8px}.card p{color:var(--muted);line-height:1.55}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.metric{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:17px;padding:13px}.metric strong{font-size:22px;display:block}
+.app{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.chat{height:640px;display:flex;flex-direction:column;overflow:hidden}.chatTop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.status{display:flex;align-items:center;gap:8px;color:#b7ffe0;font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green)}
+.messages{flex:1;overflow:auto;padding-right:6px}.msg{display:flex;margin:12px 0;gap:10px}.avatar{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;font-weight:900;flex:none}.bot .avatar{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#00111d}.user .avatar{background:#1e293b;color:#dbeafe}.bubble{max-width:82%;padding:13px 14px;border-radius:17px;line-height:1.45;border:1px solid var(--line)}.bot .bubble{background:#0b1b2e}.user{justify-content:flex-end}.user .bubble{background:rgba(32,213,210,.13);border-color:rgba(32,213,210,.35)}.user .avatar{order:2}
+.choices{display:flex;flex-wrap:wrap;gap:9px;padding-top:13px;border-top:1px solid var(--line);margin-top:14px}
+.choice{border:1px solid rgba(32,213,210,.35);background:rgba(32,213,210,.09);color:#d8ffff;border-radius:999px;padding:10px 13px;font-weight:800;cursor:pointer}.choice:hover{background:rgba(32,213,210,.18)}
+.inputRow{display:flex;gap:10px;border-top:1px solid var(--line);padding-top:14px;margin-top:12px}
+input,textarea{width:100%;border:1px solid var(--line);background:#071526;color:var(--text);border-radius:14px;padding:12px 13px;outline:none}textarea{min-height:130px;resize:vertical}
+button{border:0;border-radius:14px;padding:12px 16px;font-weight:950;cursor:pointer;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#00111d}
+button.secondary{background:#14243a;color:#dbeafe;border:1px solid var(--line)}button.ghost{background:rgba(255,255,255,.04);color:#dbeafe;border:1px solid var(--line)}
+.side{display:flex;flex-direction:column;gap:18px}.panelTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panelTitle h3{margin:0}.tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;color:#cfe9ff}
+.kvs{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.kv{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:15px;padding:11px}.kv small{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.kv strong{font-size:14px}
+.timeline{display:flex;flex-direction:column;gap:8px}.step{display:flex;gap:9px;align-items:center;color:var(--muted);font-size:14px}.num{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#14243a;border:1px solid var(--line);font-size:12px}.step.done{color:#bbf7d0}.step.done .num{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.35)}
+.report{white-space:pre-wrap;background:#06101d;border:1px solid var(--line);border-radius:16px;padding:16px;max-height:350px;overflow:auto;color:#d8ecff;font-size:13px;line-height:1.45}
+.aiBox{border:1px solid rgba(139,92,246,.35);background:rgba(139,92,246,.08);border-radius:17px;padding:14px}.aiBox strong{color:#ddd6fe}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.sev{display:inline-block;border-radius:999px;padding:6px 9px;font-weight:950}.alta{background:rgba(239,68,68,.15);color:#fecaca}.media{background:rgba(245,158,11,.15);color:#fde68a}.baixa{background:rgba(34,197,94,.15);color:#bbf7d0}
+.toast{position:fixed;right:22px;bottom:22px;background:#0b1b2e;border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:none}
+@media(max-width:1050px){.hero,.app{grid-template-columns:1fr}.chat{height:620px}.metrics{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="logo">IA</div><div><h1>UAU Assist IA — Triagem Inteligente</h1><div class="sub">Demo visual para suporte, atendimento e abertura de chamado Tech</div></div></div>
+  <div class="pill">GitHub Pages ready • HTML único</div>
+</header>
+
+<section class="hero">
+  <div class="card">
+    <h2>Assistente guiado com IA simulada</h2>
+    <p>O atendente responde perguntas simples. A IA organiza o caso, calcula prioridade, sugere categoria e gera um chamado técnico padronizado para análise.</p>
+    <div class="metrics">
+      <div class="metric"><strong>Chat</strong><span>Fluxo intuitivo</span></div>
+      <div class="metric"><strong>IA</strong><span>Resumo técnico</span></div>
+      <div class="metric"><strong>Tech</strong><span>Chamado pronto</span></div>
+      <div class="metric"><strong>UAU</strong><span>Contexto ERP</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Como demonstrar</h2>
+    <p>Clique nas opções do chat. No final, use <b>Gerar Relatório IA</b> e depois <b>Abrir Chamado Tech</b>. A demo não usa backend, mas simula exatamente a experiência do produto final.</p>
+    <div class="aiBox"><strong>Visão de produto:</strong> depois isso pode integrar OpenAI/Ollama + Azure DevOps/Jira/GLPI para abrir chamados reais.</div>
+  </div>
+</section>
+
+<section class="app">
+  <main class="card chat">
+    <div class="chatTop">
+      <div><strong>Conversa de triagem</strong><div class="sub">A IA conduz a investigação como um atendente sênior</div></div>
+      <div class="status"><span class="dot"></span> Assistente ativo</div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="choices" id="choices"></div>
+    <div class="inputRow" id="inputRow" style="display:none">
+      <input id="freeInput" placeholder="Digite a resposta..." onkeydown="if(event.key==='Enter') submitFree()"/>
+      <button onclick="submitFree()">Enviar</button>
+    </div>
+  </main>
+
+  <aside class="side">
+    <div class="card">
+      <div class="panelTitle"><h3>Dados coletados</h3><span class="tag" id="scoreTag">0%</span></div>
+      <div class="kvs" id="kvs"></div>
+    </div>
+
+    <div class="card">
+      <div class="panelTitle"><h3>Etapas</h3><span class="tag">Triagem</span></div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <div class="card">
+      <div class="panelTitle"><h3>Relatório IA</h3><span class="tag" id="sevTag">Pendente</span></div>
+      <div class="report" id="report">O relatório será gerado ao final da conversa.</div>
+      <div class="actions">
+        <button onclick="generateReport()">Gerar Relatório IA</button>
+        <button class="secondary" onclick="openTicket()">Abrir Chamado Tech</button>
+        <button class="ghost" onclick="copyReport()">Copiar</button>
+        <button class="ghost" onclick="downloadReport()">Baixar .txt</button>
+      </div>
+    </div>
+  </aside>
+</section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const data = {
+  modulo:"", fluxo:"", etapa:"", ambiente:"", versao:"", empresa:"", obra:"", competencia:"",
+  erro:"", reproduz:"", impacto:"", evidencias:"", categoria:"", prioridade:"", resumo:"", ticket:""
+};
+
+const flow = [
+  {k:"modulo", q:"Qual módulo do ERP UAU está com problema?", choices:["RH","Fiscal","Financeiro","CRM","Vendas","Suprimentos"]},
+  {k:"fluxo", q:"Qual fluxo dentro do módulo?", choices:["Dissídio","Folha Mensal","Ficha de Registro","Movimentação Mensal","Outro fluxo"]},
+  {k:"etapa", q:"Em qual etapa o problema acontece?", choices:["Gerar reajuste","Lançar rubrica 242","Calcular folha","Validar recibo","Abrir tela","Salvar cadastro"]},
+  {k:"ambiente", q:"Em qual ambiente ocorreu?", choices:["Produção","Homologação","Treinamento","VM Local"]},
+  {k:"versao", q:"Informe a versão do UAU ou build, se souber.", free:true, placeholder:"Ex.: 10.06"},
+  {k:"empresa", q:"Qual empresa está sendo usada?", free:true, placeholder:"Ex.: 10 ou 20"},
+  {k:"obra", q:"Qual obra?", free:true, placeholder:"Ex.: 01"},
+  {k:"competencia", q:"Qual competência/mês base?", free:true, placeholder:"Ex.: 09/2023 ou 05/2026"},
+  {k:"erro", q:"Cole a mensagem de erro ou descreva o comportamento.", free:true, placeholder:"Ex.: rubrica não aparece no recibo..."},
+  {k:"reproduz", q:"O problema reproduz novamente?", choices:["Sim, sempre","Às vezes","Não consegui reproduzir","Ainda não testado"]},
+  {k:"impacto", q:"Qual o impacto operacional?", choices:["Usuário parado","Processo parcial impactado","Divergência de valor","Dúvida operacional","Sem impacto imediato"]},
+  {k:"evidencias", q:"Existe print, log ou vídeo?", choices:["Print anexado","Log anexado","Print + log","Sem evidência ainda"]},
+];
+
+let idx = -1;
+let reportText = "";
+
+function addMsg(type, text){
+  const wrap = document.createElement("div");
+  wrap.className = "msg " + type;
+  wrap.innerHTML = `<div class="avatar">${type==="bot"?"IA":"EU"}</div><div class="bubble">${text}</div>`;
+  document.getElementById("messages").appendChild(wrap);
+  document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+}
+
+function start(){
+  addMsg("bot","Olá! Vou te ajudar a transformar esse atendimento em um caso técnico completo para o ERP UAU.");
+  setTimeout(()=>nextQuestion(),500);
+  renderSide();
+}
+
+function nextQuestion(){
+  idx++;
+  document.getElementById("inputRow").style.display = "none";
+  document.getElementById("choices").innerHTML = "";
+  if(idx >= flow.length){
+    classify();
+    addMsg("bot","Triagem concluída. Já consigo gerar um relatório técnico e simular a abertura do chamado para Tech.");
+    addMsg("bot",`Classificação sugerida: <b>${data.categoria}</b> • Prioridade: <b>${data.prioridade}</b>. Clique em <b>Gerar Relatório IA</b>.`);
+    renderSide();
+    return;
+  }
+  const item = flow[idx];
+  addMsg("bot", item.q);
+  if(item.free){
+    document.getElementById("inputRow").style.display = "flex";
+    document.getElementById("freeInput").value = "";
+    document.getElementById("freeInput").placeholder = item.placeholder || "Digite...";
+    setTimeout(()=>document.getElementById("freeInput").focus(),100);
+  } else {
+    document.getElementById("choices").innerHTML = item.choices.map(c=>`<button class="choice" onclick="choose('${c.replaceAll("'","")}')">${c}</button>`).join("");
+  }
+  renderSide();
+}
+
+function choose(value){
+  const item = flow[idx];
+  data[item.k] = value;
+  addMsg("user", value);
+  document.getElementById("choices").innerHTML = "";
+  setTimeout(()=>nextQuestion(),450);
+}
+
+function submitFree(){
+  const value = document.getElementById("freeInput").value.trim();
+  if(!value) return;
+  const item = flow[idx];
+  data[item.k] = value;
+  addMsg("user", value);
+  document.getElementById("inputRow").style.display = "none";
+  setTimeout(()=>nextQuestion(),450);
+}
+
+function classify(){
+  let cat = "Análise técnica";
+  if((data.erro||"").toLowerCase().includes("rubrica") || data.etapa.includes("rubrica")) cat = "Regra de cálculo / Rubrica";
+  if((data.erro||"").toLowerCase().includes("acordo")) cat = "Configuração de acordo coletivo";
+  if(data.impacto==="Dúvida operacional") cat = "Dúvida operacional";
+  if(data.impacto==="Divergência de valor") cat = "Divergência de cálculo";
+  data.categoria = cat;
+
+  let pr = "Média";
+  if(data.impacto==="Usuário parado" || data.reproduz==="Sim, sempre") pr = "Alta";
+  if(data.impacto==="Sem impacto imediato" || data.impacto==="Dúvida operacional") pr = "Baixa";
+  data.prioridade = pr;
+}
+
+function completeness(){
+  const keys = ["modulo","fluxo","etapa","ambiente","versao","empresa","obra","competencia","erro","reproduz","impacto","evidencias"];
+  return Math.round(keys.filter(k=>data[k]).length / keys.length * 100);
+}
+
+function renderSide(){
+  const kvs = [
+    ["Módulo",data.modulo],["Fluxo",data.fluxo],["Etapa",data.etapa],["Ambiente",data.ambiente],
+    ["Versão",data.versao],["Empresa",data.empresa],["Obra",data.obra],["Competência",data.competencia],
+    ["Reprodução",data.reproduz],["Impacto",data.impacto],["Evidência",data.evidencias],["Categoria",data.categoria]
+  ];
+  document.getElementById("kvs").innerHTML = kvs.map(([k,v])=>`<div class="kv"><small>${k}</small><strong>${v || "—"}</strong></div>`).join("");
+  document.getElementById("scoreTag").innerText = completeness() + "%";
+  document.getElementById("timeline").innerHTML = flow.map((f,i)=>`<div class="step ${data[f.k]?'done':''}"><span class="num">${data[f.k]?'✓':i+1}</span>${f.q.replace("?","")}</div>`).join("");
+  const sev = data.prioridade || "Pendente";
+  document.getElementById("sevTag").innerHTML = sev==="Alta" ? `<span class="sev alta">Alta</span>` : sev==="Média" ? `<span class="sev media">Média</span>` : sev==="Baixa" ? `<span class="sev baixa">Baixa</span>` : "Pendente";
+}
+
+function generateReport(){
+  classify();
+  const id = "UAU-TECH-" + new Date().toISOString().slice(0,10).replaceAll("-","") + "-" + Math.floor(Math.random()*9000+1000);
+  data.ticket = id;
+  reportText = `CHAMADO TÉCNICO GERADO POR IA - ${id}
+
+Resumo executivo
+Foi identificado um atendimento relacionado ao ERP UAU no módulo ${data.modulo || "não informado"}, fluxo ${data.fluxo || "não informado"}, com ocorrência na etapa "${data.etapa || "não informada"}". A prioridade sugerida é ${data.prioridade || "Média"} e a categoria inicial é "${data.categoria || "Análise técnica"}".
+
+Dados do cenário
+- Sistema: ERP UAU
+- Módulo: ${data.modulo || "Não informado"}
+- Fluxo: ${data.fluxo || "Não informado"}
+- Etapa afetada: ${data.etapa || "Não informado"}
+- Ambiente: ${data.ambiente || "Não informado"}
+- Versão/build: ${data.versao || "Não informado"}
+- Empresa: ${data.empresa || "Não informado"}
+- Obra: ${data.obra || "Não informado"}
+- Competência: ${data.competencia || "Não informado"}
+
+Comportamento observado
+${data.erro || "Não informado"}
+
+Reprodução e impacto
+- Reprodução: ${data.reproduz || "Não informado"}
+- Impacto: ${data.impacto || "Não informado"}
+- Evidências: ${data.evidencias || "Não informado"}
+
+Análise IA preliminar
+A IA sugere iniciar a investigação verificando:
+1. Parametrizações do fluxo ${data.fluxo || "informado"}.
+2. Massa de dados da empresa ${data.empresa || "-"} e obra ${data.obra || "-"}.
+3. Regras aplicáveis à competência ${data.competencia || "-"}.
+4. Logs do momento da falha.
+5. Comparação com execução anterior bem-sucedida, se existir.
+
+Critério de aceite para Tech
+- Confirmar se é bug, configuração, massa de dados ou comportamento esperado.
+- Informar causa raiz.
+- Indicar workaround, se houver.
+- Registrar evidência da correção ou orientação final.
+
+Status
+Chamado pronto para análise técnica.`;
+
+  document.getElementById("report").innerText = reportText;
+  addMsg("bot","Relatório IA gerado com sucesso. Agora você pode copiar, baixar ou simular a abertura do chamado Tech.");
+  renderSide();
+  toast("Relatório IA gerado.");
+}
+
+function openTicket(){
+  if(!reportText) generateReport();
+  addMsg("bot",`Chamado <b>${data.ticket}</b> aberto para Tech com prioridade <b>${data.prioridade}</b>. Na versão real, aqui integraríamos Azure DevOps, Jira ou GLPI.`);
+  toast("Chamado Tech simulado com sucesso.");
+}
+
+function copyReport(){
+  if(!reportText) generateReport();
+  navigator.clipboard.writeText(reportText);
+  toast("Relatório copiado.");
+}
+
+function downloadReport(){
+  if(!reportText) generateReport();
+  const blob = new Blob([reportText], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = (data.ticket || "chamado_uau_ia") + ".txt"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function toast(txt){
+  const t = document.getElementById("toast");
+  t.innerText = txt; t.style.display = "block";
+  setTimeout(()=>t.style.display="none",2500);
+}
+
+start();
+</script>
+</body>
+</html>
